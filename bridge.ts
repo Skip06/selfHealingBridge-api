@@ -1,3 +1,5 @@
+import { askAgentForFix } from "./agent"  
+
 const SOURCE_URL = 'http://localhost:3001/data'
 const DEST_URL = 'http://localhost:3002/ingest'
 
