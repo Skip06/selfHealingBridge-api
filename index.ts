@@ -22,7 +22,7 @@ destApp.post('/ingest', (req,res)=> {
     return res.status(400).json({
       error: "missing required fields",
       received: req.body,
-      required: [fullName, emailAdd]
+      required: ['fullName', 'emailAdd']
     })
   }
   
