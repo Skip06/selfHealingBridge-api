@@ -1,6 +1,8 @@
+import { ChatGroq } from "@langchain/groq";
 import { ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
 import { Document } from "@langchain/core/documents";
+import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/huggingface_transformers";
 import "dotenv/config";
 
 /** * --- 1. PREPARING THE "KNOWLEDGE" (RAG) ---
@@ -21,10 +23,9 @@ const documentation = [
 export async function askAgentForFix(sourceData: any, errorLog: any): Promise<Record<string, string>> {
   
   // A. Initialize the Embedding Model (How AI "reads" the manual)
-  const embeddings = new GoogleGenerativeAIEmbeddings({
-    modelName: "embedding-001",
-    apiKey: process.env.GOOGLE_API_KEY,
-  });
+  const embeddings = new HuggingFaceTransformersEmbeddings({
+      model: "Xenova/all-MiniLM-L6-v2", // Very lightweight and fast
+    });
 
   // B. Create a temporary "Searchable Manual" (Vector Store)
   const vectorStore = await MemoryVectorStore.fromDocuments(documentation, embeddings);
@@ -43,11 +44,10 @@ export async function askAgentForFix(sourceData: any, errorLog: any): Promise<Re
   const context = relevantDocs[0]?.pageContent ?? documentation[0]!.pageContent;
 
   // D. Initialize the "Brain" (Gemini)
-  const model = new ChatGoogleGenerativeAI({
-    model: "gemini-1.5-flash",
-    apiKey: process.env.GOOGLE_API_KEY,
-    temperature: 0, // 0 makes the AI "strict" and less creative (good for code)
-  });
+  const model = new ChatGroq({
+      apiKey: process.env.GROQ_API_KEY,
+      model: "llama-3.3-70b-versatile",
+    });
 
   // E. The Prompt (The instruction you give the AI)
   const prompt = `
