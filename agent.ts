@@ -32,6 +32,14 @@ export async function askAgentForFix(sourceData: any, errorLog: any): Promise<Re
   // C. Search for the specific page in the manual related to the error
   // Argument: The error message string. Returns: The most relevant sentence.
   const relevantDocs = await vectorStore.similaritySearch(JSON.stringify(errorLog), 1);
+  // this is what relevantDocs looks like rn:/*[
+  //   {
+  //     "pageContent": "Modern API v2 Docs: The field 'fullName' from legacy systems must now be mapped to 'name'. The field 'emailAdd' must be mapped to 'email'.",
+  //     "metadata": {
+  //       // Internal metadata like source file or line numbers
+  //     }
+  //   }
+  // ]
   const context = relevantDocs[0]?.pageContent ?? documentation[0]!.pageContent;
 
   // D. Initialize the "Brain" (Gemini)

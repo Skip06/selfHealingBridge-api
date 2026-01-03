@@ -15,14 +15,14 @@ sourceApp.get('/data', (req,res) =>{
 })
 
 destApp.post('/ingest', (req,res)=> {
-  const { fullName, emailAdd } = req.body;
+  const { name, email } = req.body;
   
-  if(!fullName || !emailAdd){
+  if(!name || !email){
     console.error('Missing required fieds');
     return res.status(400).json({
       error: "missing required fields",
       received: req.body,
-      required: ['fullName', 'emailAdd']
+      required: ['name', 'email']
     })
   }
   
